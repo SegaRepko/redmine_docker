@@ -1,0 +1,24 @@
+version: '3' #Визначає версію формату Docker Compose.
+
+services:   #Описує сервіс Redmine:
+  redmine:
+    build: .   #build: . - вказує шлях до контексту для збірки Docker-образу (в даному випадку, поточна директорія).
+    image: redmine:latest   #image: redmine:latest - вказує назву та тег Docker-образу для використання.
+    ports:     #ports: - "3000:3000" - вказує мапування портів для доступу до Redmine з зовнішнього середовища.
+      - "3000:3000"
+    depends_on: #depends_on: - db - вказує, що сервіс Redmine залежить від сервісу db (чекає, доки db буде готовий до використання).
+      - db
+    environment:  #environment: - визначає змінні середовища для Redmine, включаючи параметри підключення до бази даних.
+      REDMINE_DB_ADAPTER: mysql2
+      REDMINE_DB_MYSQL: db
+      REDMINE_DB_DATABASE: redmine
+      REDMINE_DB_USERNAME: redmine_user
+      REDMINE_DB_PASSWORD: example_password
+
+  db:      #Описує сервіс бази даних MariaDB:
+    image: mariadb:latest   #image: mariadb:latest - вказує готовий Docker-образ MariaDB та його тег.
+    environment:   #environment: - визначає змінні середовища для конфігурації
+      MYSQL_ROOT_PASSWORD: example_root_password
+      MYSQL_DATABASE: redmine
+      MYSQL_USER: redmine_user
+      MYSQL_PASSWORD: example_password
